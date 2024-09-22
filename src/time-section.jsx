@@ -86,6 +86,7 @@ const TimeSection = () => {
             setIsPause(false);
             setIsButtonStartCount(false);
             setIsTimeRunning(false);
+            setTimeCount(initialSessionTime * 60);
           }}
           className="border border-white px-4 rounded-full max-w-[128px] font-mono hover:bg-copper"
         >
