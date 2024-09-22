@@ -7,6 +7,7 @@ const TimeSection = () => {
   const [timeBreak, setTimeBreak] = useState(5);
 
   const [isButtonStartCount, setIsButtonStartCount] = useState(false);
+  const [isTimeRunning, setIsTimeRunning] = useState(false);
   const [isPause, setIsPause] = useState(false);
   const [isReset, setIsReset] = useState(false);
 
@@ -19,7 +20,7 @@ const TimeSection = () => {
   }, [initialSessionTime, initialTimeBreak]);
 
   useEffect(() => {
-    if (!isPause && isButtonStartCount && timeCount > 0) {
+    if (isTimeRunning && !isPause && isButtonStartCount && timeCount > 0) {
       const myTimeCount = setInterval(() => {
         console.log("Countdown Time");
         setTimeCount(timeCount - 1);
@@ -31,7 +32,10 @@ const TimeSection = () => {
     } else if (isPause && isButtonStartCount && timeCount > 0) {
       setTimeCount(timeCount);
     }
-  }, [isButtonStartCount, isPause, timeCount]);
+    if (timeCount === 0 && isTimeRunning) {
+      setIsButtonStartCount(false);
+    }
+  }, [isTimeRunning, isButtonStartCount, isPause, timeCount]);
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -59,22 +63,20 @@ const TimeSection = () => {
             setIsButtonStartCount(true);
             setIsPause(false);
             setIsReset(false);
-            setTimeCount(initialSessionTime * 60);
+            setIsTimeRunning(true);
           }}
           className="border border-white px-4 rounded-full max-w-[128px] font-mono hover:bg-copper"
-          hidden={isButtonStartCount}
+          hidden={isTimeRunning && isButtonStartCount && !isPause}
         >
           Start
         </button>
         <button
           onClick={() => {
-            // setTimeCount(timeCount);
             setIsPause(true);
-            setIsReset(false);
-            setIsButtonStartCount(true);
+            setIsTimeRunning(false);
           }}
           className="border border-white px-4 rounded-full max-w-[128px] font-mono hover:bg-copper"
-          hidden={!isButtonStartCount}
+          hidden={!isTimeRunning || isPause}
         >
           Pause
         </button>
@@ -83,6 +85,7 @@ const TimeSection = () => {
             setIsReset(true);
             setIsPause(false);
             setIsButtonStartCount(false);
+            setIsTimeRunning(false);
           }}
           className="border border-white px-4 rounded-full max-w-[128px] font-mono hover:bg-copper"
         >
