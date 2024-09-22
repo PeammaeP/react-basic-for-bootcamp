@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const TimeSection = () => {
-  const [time, setTime] = useState(10);
+  const [timeCount, setTimeCount] = useState(10);
+  const [initialSessionTime, setInitialSessionTime] = useState(10);
+  const [initialTimeBreak, setInitialTimeBreak] = useState(5);
   const [timeBreak, setTimeBreak] = useState(5);
+
+  // using for update the time value
+  useEffect(() => {
+    setTimeCount(initialSessionTime);
+    setTimeBreak(initialTimeBreak);
+  }, [initialSessionTime, initialTimeBreak]);
 
   return (
     <section className="mt-8 bg-redwood w-4/5 h-240 p-20">
@@ -13,7 +21,7 @@ const TimeSection = () => {
       </section>
       <section>
         <div className="mt-4 text-4xl flex flex-row justify-center items-center font-mono">
-          {time}
+          {timeCount}
         </div>
       </section>
       <section className="mt-12 grid grid-cols-2 justify-items-center items-center">
@@ -30,22 +38,26 @@ const TimeSection = () => {
             Session Timer
           </div>
           <div className="px-4 rounded-full text-4xl font-mono flex flex-row justify-center items-center">
-            {time}
+            {initialSessionTime}
           </div>
           <div className="mt-6 grid grid-cols-2">
             <button
-              onClick={() => setTime(time - 1)}
+              onClick={() => {
+                setInitialSessionTime(initialSessionTime - 1);
+              }}
               className={
-                time === 0
+                initialSessionTime === 0
                   ? `rounded-full border border-white w-full h-full max-w-[128px] bg-smoke`
                   : `rounded-full border border-white w-full h-full max-w-[128px] hover:bg-copper`
               }
-              disabled={time === 0}
+              disabled={initialSessionTime === 0}
             >
               -
             </button>
             <button
-              onClick={() => setTime(time + 1)}
+              onClick={() => {
+                setInitialSessionTime(initialSessionTime + 1);
+              }}
               className="rounded-full border border-white w-full h-full max-w-[128px] hover:bg-copper"
             >
               +
@@ -57,22 +69,22 @@ const TimeSection = () => {
             Break Timer
           </div>
           <div className="px-4 rounded-full text-4xl flex flex-row justify-center items-center font-mono">
-            {timeBreak}
+            {initialTimeBreak}
           </div>
           <div className="mt-6 grid grid-cols-2">
             <button
-              onClick={() => setTimeBreak(timeBreak - 1)}
+              onClick={() => setInitialTimeBreak(initialTimeBreak - 1)}
               className={
-                timeBreak === 0
+                initialTimeBreak === 0
                   ? `rounded-full border border-white w-full h-full max-w-[128px] bg-smoke`
                   : `rounded-full border border-white w-full h-full max-w-[128px] hover:bg-copper`
               }
-              disabled={time === 0}
+              disabled={initialTimeBreak === 0}
             >
               -
             </button>
             <button
-              onClick={() => setTimeBreak(timeBreak + 1)}
+              onClick={() => setInitialTimeBreak(initialTimeBreak + 1)}
               className="rounded-full border border-white w-full h-full max-w-[128px] hover:bg-copper"
             >
               +
