@@ -2,20 +2,40 @@ import { useState, useEffect } from "react";
 
 const TimeSection = () => {
   const [initialSessionTime, setInitialSessionTime] = useState(10);
-  const [timeCount, setTimeCount] = useState(initialSessionTime);
+  const [timeCount, setTimeCount] = useState(initialSessionTime * 60);
   const [initialTimeBreak, setInitialTimeBreak] = useState(5);
   const [timeBreak, setTimeBreak] = useState(5);
 
+  const [isButtonStartCount, setIsButtonStartCount] = useState(false);
+  const [isPause, setIsPause] = useState(false);
+  const [isReset, setIsReset] = useState(false);
+
+  const TIME_INTERVAL = 100;
+
   // using for update the time value
   useEffect(() => {
-    setTimeCount(initialSessionTime);
-    setTimeBreak(initialTimeBreak);
+    setTimeCount(initialSessionTime * 60);
+    setTimeBreak(initialTimeBreak * 60);
   }, [initialSessionTime, initialTimeBreak]);
 
+  useEffect(() => {
+    if (!isPause && isButtonStartCount && timeCount > 0) {
+      const myTimeCount = setInterval(() => {
+        console.log("Countdown Time");
+        setTimeCount(timeCount - 1);
+      }, TIME_INTERVAL);
+      // clear the Interval Time to prevent the error
+      return () => {
+        clearInterval(myTimeCount);
+      };
+    } else if (isPause && isButtonStartCount && timeCount > 0) {
+      setTimeCount(timeCount);
+    }
+  }, [isButtonStartCount, isPause, timeCount]);
+
   const formatTime = (time) => {
-    const duration = time * 60; // in seconds
-    const minutes = Math.floor(duration / 60);
-    const seconds = duration % 60;
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
@@ -28,14 +48,44 @@ const TimeSection = () => {
       </section>
       <section>
         <div className="mt-4 text-4xl flex flex-row justify-center items-center font-mono">
-          {formatTime(timeCount)}
+          {isReset
+            ? formatTime(initialSessionTime * 60)
+            : formatTime(timeCount)}
         </div>
       </section>
       <section className="mt-12 grid grid-cols-2 justify-items-center items-center">
-        <button className="border border-white px-4 rounded-full max-w-[128px] font-mono">
+        <button
+          onClick={() => {
+            setIsButtonStartCount(true);
+            setIsPause(false);
+            setIsReset(false);
+            setTimeCount(initialSessionTime * 60);
+          }}
+          className="border border-white px-4 rounded-full max-w-[128px] font-mono hover:bg-copper"
+          hidden={isButtonStartCount}
+        >
           Start
         </button>
-        <button className="border border-white px-4 rounded-full max-w-[128px] font-mono">
+        <button
+          onClick={() => {
+            // setTimeCount(timeCount);
+            setIsPause(true);
+            setIsReset(false);
+            setIsButtonStartCount(true);
+          }}
+          className="border border-white px-4 rounded-full max-w-[128px] font-mono hover:bg-copper"
+          hidden={!isButtonStartCount}
+        >
+          Pause
+        </button>
+        <button
+          onClick={() => {
+            setIsReset(true);
+            setIsPause(false);
+            setIsButtonStartCount(false);
+          }}
+          className="border border-white px-4 rounded-full max-w-[128px] font-mono hover:bg-copper"
+        >
           Reset
         </button>
       </section>
