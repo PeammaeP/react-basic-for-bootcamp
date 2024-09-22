@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 
 const TimeSection = () => {
-  const [timeCount, setTimeCount] = useState(10);
   const [initialSessionTime, setInitialSessionTime] = useState(10);
+  const [timeCount, setTimeCount] = useState(initialSessionTime);
   const [initialTimeBreak, setInitialTimeBreak] = useState(5);
   const [timeBreak, setTimeBreak] = useState(5);
 
@@ -11,6 +11,13 @@ const TimeSection = () => {
     setTimeCount(initialSessionTime);
     setTimeBreak(initialTimeBreak);
   }, [initialSessionTime, initialTimeBreak]);
+
+  const formatTime = (time) => {
+    const duration = time * 60; // in seconds
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
 
   return (
     <section className="mt-8 bg-redwood w-4/5 h-240 p-20">
@@ -21,7 +28,7 @@ const TimeSection = () => {
       </section>
       <section>
         <div className="mt-4 text-4xl flex flex-row justify-center items-center font-mono">
-          {timeCount}
+          {formatTime(timeCount)}
         </div>
       </section>
       <section className="mt-12 grid grid-cols-2 justify-items-center items-center">
